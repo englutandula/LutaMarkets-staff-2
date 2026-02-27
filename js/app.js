@@ -287,6 +287,14 @@ const Router = {
             item.classList.toggle('active', item.dataset.view === view);
         });
 
+        // Close sidebar on mobile after navigation
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        if (sidebar && sidebar.classList.contains('open')) {
+            sidebar.classList.remove('open');
+            if (overlay) overlay.classList.remove('active');
+        }
+
         // Render the view
         const container = document.getElementById('app-content');
         if (!container) return;
@@ -322,9 +330,21 @@ function initNavigation() {
     // Mobile menu toggle
     const mobileBtn = document.getElementById('mobile-menu-btn');
     const sidebar = document.querySelector('.sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+
     if (mobileBtn && sidebar) {
-        mobileBtn.addEventListener('click', () => {
+        mobileBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             sidebar.classList.toggle('open');
+            if (overlay) overlay.classList.toggle('active');
+        });
+    }
+
+    // Close on overlay click
+    if (overlay) {
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
         });
     }
 }

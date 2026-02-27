@@ -356,48 +356,108 @@ function renderStep3() {
     <div class="wizard-section" style="text-align:center;">
       <div class="wizard-section-title" style="justify-content:center;"><span class="section-icon">✅</span> Receipt Preview</div>
       <div class="receipt-wrapper">
+        <!-- A5 Portrait Receipt -->
         <div class="receipt-card" id="receipt-to-download">
-          <div class="receipt-header">
-            <div class="receipt-logo-placeholder"><img src="${LOGO_BASE64}" alt="LutaMarkets Logo"></div>
-            <h3 style="color:#0f172a;">LutaMarkets</h3>
-            <div class="receipt-tagline" style="color:#64748b;">Financial Market Mentorship</div>
-          </div>
-          <div class="receipt-meta">
-            <div class="meta-item"><div class="meta-label">Receipt No.</div><div class="meta-value">${receiptState.receiptNumber}</div></div>
-            <div class="meta-item" style="text-align:right;"><div class="meta-label">Date</div><div class="meta-value">${formatDate(receiptState.receiptDate)}</div></div>
-          </div>
-          <div class="receipt-body">
-            <div class="receipt-row"><span class="row-label">Student Name</span><span class="row-value">${receiptState.studentName}</span></div>
-            <div class="receipt-row"><span class="row-label">Country</span><span class="row-value">${receiptState.country}</span></div>
-            <div class="receipt-row"><span class="row-label">Program</span><span class="row-value">${program.name}</span></div>
-            <div class="receipt-total">
-              <div class="total-row"><span>Paid Amount (TZS)</span><span class="fw-700">${formatCurrency(Math.round(receiptState.paidAmountUSD * receiptState.effectiveRate))} TZS</span></div>
-              <div class="total-row"><span>Paid Amount (USD)</span><span class="fw-700 text-success">$${formatCurrency(receiptState.paidAmountUSD)}</span></div>
-              <div class="total-row main"><span>Remaining Balance (USD)</span><span>$${formatCurrency(receiptState.remainingUSD)}</span></div>
+          <div class="print-status-watermark">${receiptState.status === 'Fully Paid' ? 'PAID' : 'DUE'}</div>
+          
+          <div class="receipt-header-redesign">
+            <div class="receipt-logo-container">
+              <img src="${LOGO_BASE64}" alt="LutaMarkets Logo">
+            </div>
+            <div class="company-info">
+              <h2>LutaMarkets</h2>
+              <p class="tagline">Financial Market Mentorship</p>
             </div>
           </div>
+
+          <div class="receipt-meta-grid">
+            <div class="meta-box">
+              <label>Receipt No.</label>
+              <span>${receiptState.receiptNumber}</span>
+            </div>
+            <div class="meta-box" style="text-align:right;">
+              <label>Date Issued</label>
+              <span>${formatDate(receiptState.receiptDate)}</span>
+            </div>
+          </div>
+
+          <div class="customer-details">
+            <div class="section-title">Student Information</div>
+            <div class="details-grid">
+              <div class="detail-item">
+                <label>Name</label>
+                <span>${receiptState.studentName}</span>
+              </div>
+              <div class="detail-item">
+                <label>Program</label>
+                <span>${program.name}</span>
+              </div>
+              <div class="detail-item">
+                <label>Country</label>
+                <span>${receiptState.country}</span>
+              </div>
+              <div class="detail-item">
+                <label>Status</label>
+                <span style="color:${receiptState.status === 'Fully Paid' ? 'var(--success)' : 'var(--warning)'}">${receiptState.status}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="payment-summary">
+            <div class="section-title" style="color:rgba(255,255,255,0.4);border-color:rgba(255,255,255,0.1);">Payment Summary</div>
+            <div class="summary-row">
+              <label>Paid Amount (TZS)</label>
+              <span>${formatCurrency(Math.round(receiptState.paidAmountUSD * receiptState.effectiveRate))} TZS</span>
+            </div>
+            <div class="summary-row">
+              <label>Paid Amount (USD)</label>
+              <span>$${formatCurrency(receiptState.paidAmountUSD)}</span>
+            </div>
+            <div class="summary-row total">
+              <label>Remaining Balance</label>
+              <span>$${formatCurrency(receiptState.remainingUSD)}</span>
+            </div>
+          </div>
+
           ${isInstallment ? `
-          <div class="receipt-installments">
-            <h4>Payment History</h4>
-            <table class="installment-table">
-              <thead><tr><th>#</th><th>Date</th><th>Amount (USD)</th><th>Method</th></tr></thead>
-              <tbody><tr><td>Installment 1</td><td>${formatDate(receiptState.receiptDate)}</td><td>$${formatCurrency(receiptState.paidAmountUSD)}</td><td>Initial Payment</td></tr></tbody>
+          <div class="receipt-history">
+            <div class="section-title">Payment History</div>
+            <table class="history-table">
+              <thead>
+                <tr>
+                  <th>Installment</th>
+                  <th>Date</th>
+                  <th style="text-align:right;">Amount (USD)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Installment 1</td>
+                  <td>${formatDate(receiptState.receiptDate)}</td>
+                  <td style="text-align:right;">$${formatCurrency(receiptState.paidAmountUSD)}</td>
+                </tr>
+              </tbody>
             </table>
           </div>` : ''}
-          <div class="receipt-status">
-            <span class="status-badge ${receiptState.status === 'Fully Paid' ? 'paid' : 'installment'}">
-              ${receiptState.status === 'Fully Paid' ? '✓ FULLY PAID' : '⏳ ' + receiptState.status.toUpperCase()}
-            </span>
+
+          <div class="receipt-footer-redesign">
+            <div class="footer-left">
+              <div class="thanks">Thank you for your payment!</div>
+              <div class="contact">LutaMarkets Academy | Management System</div>
+            </div>
+            <div class="qr-container">
+              <div class="qr-code" id="receipt-qr-code"></div>
+              <div class="qr-label">Verify Receipt</div>
+            </div>
           </div>
-          <div class="receipt-qr"><div id="receipt-qr-code"></div><div class="qr-label">Scan for details</div></div>
-          <div class="receipt-footer">Thank you for choosing LutaMarkets</div>
         </div>
       </div>
     </div>
     <div class="wizard-nav" style="justify-content:space-between;">
       <button class="btn btn-outline" onclick="goToStep(2)">← Back</button>
       <button class="btn btn-accent" onclick="handleDownloadAndSave()">⬇ Download Receipt (PNG)</button>
-    </div>`;
+    </div>
+`;
 }
 
 // =============================================
@@ -562,41 +622,109 @@ async function regenerateReceipt(studentId) {
       <div class="wizard-container" style="text-align:center;">
         <div class="wizard-header"><h2>Student Receipt</h2><p class="wizard-subtitle">${student.name} – ${student.program}</p></div>
         <div class="receipt-wrapper">
+          <!-- A5 Portrait Receipt (Regeneration) -->
           <div class="receipt-card" id="receipt-to-download">
-            <div class="receipt-header">
-              <div class="receipt-logo-placeholder"><img src="${LOGO_BASE64}" alt="LutaMarkets Logo"></div>
-              <h3 style="color:#0f172a;">LutaMarkets</h3>
-              <div class="receipt-tagline" style="color:#64748b;">Financial Market Mentorship</div>
-            </div>
-            <div class="receipt-meta">
-              <div class="meta-item"><div class="meta-label">Receipt No.</div><div class="meta-value">${student.receiptNumber}</div></div>
-              <div class="meta-item" style="text-align:right;"><div class="meta-label">Date</div><div class="meta-value">${formatDate(student.receiptDate || student.createdAt)}</div></div>
-            </div>
-            <div class="receipt-body">
-              <div class="receipt-row"><span class="row-label">Student Name</span><span class="row-value">${student.name}</span></div>
-              <div class="receipt-row"><span class="row-label">Country</span><span class="row-value">${student.country}</span></div>
-              <div class="receipt-row"><span class="row-label">Program</span><span class="row-value">${student.program}</span></div>
-              <div class="receipt-total">
-                <div class="total-row"><span>Paid Amount (TZS)</span><span class="fw-700">${formatCurrency(Math.round(paidUSD * (student.exchangeRate || 2500)))} TZS</span></div>
-                <div class="total-row"><span>Paid Amount (USD)</span><span class="fw-700 text-success">$${formatCurrency(paidUSD)}</span></div>
-                <div class="total-row main"><span>Remaining Balance (USD)</span><span>$${formatCurrency(remainUSD)}</span></div>
+            <div class="print-status-watermark">${student.status === 'Fully Paid' ? 'PAID' : 'DUE'}</div>
+
+            <div class="receipt-header-redesign">
+              <div class="receipt-logo-container">
+                <img src="${LOGO_BASE64}" alt="LutaMarkets Logo">
+              </div>
+              <div class="company-info">
+                <h2>LutaMarkets</h2>
+                <p class="tagline">Financial Market Mentorship</p>
               </div>
             </div>
-            ${historyHTML}
-            <div class="receipt-status">
-              <span class="status-badge ${student.status === 'Fully Paid' ? 'paid' : 'installment'}">
-                ${student.status === 'Fully Paid' ? '✓ FULLY PAID' : '⏳ ' + (student.status || 'INSTALLMENT').toUpperCase()}
-              </span>
+
+            <div class="receipt-meta-grid">
+              <div class="meta-box">
+                <label>Receipt No.</label>
+                <span>${student.receiptNumber}</span>
+              </div>
+              <div class="meta-box" style="text-align:right;">
+                <label>Date Issued</label>
+                <span>${formatDate(student.receiptDate || student.createdAt)}</span>
+              </div>
             </div>
-            <div class="receipt-qr"><div id="regen-qr-code"></div><div class="qr-label">Scan for details</div></div>
-            <div class="receipt-footer">Thank you for choosing LutaMarkets</div>
+
+            <div class="customer-details">
+              <div class="section-title">Student Information</div>
+              <div class="details-grid">
+                <div class="detail-item">
+                  <label>Name</label>
+                  <span>${student.name}</span>
+                </div>
+                <div class="detail-item">
+                  <label>Program</label>
+                  <span>${student.program}</span>
+                </div>
+                <div class="detail-item">
+                  <label>Country</label>
+                  <span>${student.country}</span>
+                </div>
+                <div class="detail-item">
+                  <label>Status</label>
+                  <span style="color:${student.status === 'Fully Paid' ? 'var(--success)' : 'var(--warning)'}">${student.status}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="payment-summary">
+              <div class="section-title" style="color:rgba(255,255,255,0.4);border-color:rgba(255,255,255,0.1);">Payment Summary</div>
+              <div class="summary-row">
+                <label>Paid Amount (TZS)</label>
+                <span>${formatCurrency(Math.round(paidUSD * (student.exchangeRate || 2500)))} TZS</span>
+              </div>
+              <div class="summary-row">
+                <label>Paid Amount (USD)</label>
+                <span>$${formatCurrency(paidUSD)}</span>
+              </div>
+              <div class="summary-row total">
+                <label>Remaining Balance</label>
+                <span>$${formatCurrency(remainUSD)}</span>
+              </div>
+            </div>
+
+            ${isInstallment && payments.length > 0 ? `
+            <div class="receipt-history">
+              <div class="section-title">Payment History</div>
+              <table class="history-table">
+                <thead>
+                  <tr>
+                    <th>Installment</th>
+                    <th>Date</th>
+                    <th style="text-align:right;">Amount (USD)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${payments.map((p, i) => `
+                    <tr>
+                      <td>${p.label || ('Installment ' + (i + 1))}</td>
+                      <td>${formatDate(p.date)}</td>
+                      <td style="text-align:right;">$${formatCurrency(p.amountUSD || Math.round(p.amount / (student.exchangeRate || 2500)))}</td>
+                    </tr>`).join('')}
+                </tbody>
+              </table>
+            </div>` : ''}
+
+            <div class="receipt-footer-redesign">
+              <div class="footer-left">
+                <div class="thanks">Thank you for your payment!</div>
+                <div class="contact">LutaMarkets Academy | Management System</div>
+              </div>
+              <div class="qr-container">
+                <div class="qr-code" id="regen-qr-code"></div>
+                <div class="qr-label">Verify Receipt</div>
+              </div>
+            </div>
           </div>
         </div>
         <div style="margin-top:24px;">
           <button class="btn btn-accent" onclick="downloadReceiptAsPNG('receipt-to-download','LutaMarkets_Receipt_${student.receiptNumber}.png')">⬇ Download Receipt (PNG)</button>
         </div>
       </div>
-    </div>`;
+    </div>
+`;
 
   document.body.appendChild(overlay);
   // Generate QR after DOM insertion
