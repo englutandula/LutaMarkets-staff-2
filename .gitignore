@@ -1,0 +1,22 @@
+# Local environment files
+.env
+.env.local
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# System files
+Thumbs.db
+Desktop.ini
+
+# MCP/Antigravity metadata
+.gemini/
+.agent/
+.agents/
+brain/
+task.md
+implementation_plan.md
+walkthrough.md
