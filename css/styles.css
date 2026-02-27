@@ -1933,11 +1933,12 @@ button {
 }
 
 .payment-summary {
-  background: #0f172a;
-  color: #fff;
+  background: #FDFAF6;
+  color: #1e293b;
   padding: 8mm;
   border-radius: 12px;
   margin-bottom: 8mm;
+  border: 1px solid #e2e8f0;
 }
 
 .payment-summary .summary-row {
@@ -1949,22 +1950,23 @@ button {
 .payment-summary .summary-row:last-child {
   margin-bottom: 0;
   padding-top: 4mm;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid #e2e8f0;
 }
 
 .payment-summary .summary-row label {
-  color: rgba(255, 255, 255, 0.6);
+  color: #64748b;
   font-size: 0.9rem;
 }
 
 .payment-summary .summary-row span {
   font-weight: 700;
   font-size: 1.1rem;
+  color: #0f172a;
 }
 
 .payment-summary .summary-row.total span {
   font-size: 1.5rem;
-  color: #d4af37;
+  color: #b48a04;
 }
 
 .receipt-history {

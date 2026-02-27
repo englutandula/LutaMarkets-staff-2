@@ -404,7 +404,7 @@ function renderStep3() {
           </div>
 
           <div class="payment-summary">
-            <div class="section-title" style="color:rgba(255,255,255,0.4);border-color:rgba(255,255,255,0.1);">Payment Summary</div>
+            <div class="section-title">Payment Summary</div>
             <div class="summary-row">
               <label>Paid Amount (TZS)</label>
               <span>${formatCurrency(Math.round(receiptState.paidAmountUSD * receiptState.effectiveRate))} TZS</span>
@@ -670,7 +670,7 @@ async function regenerateReceipt(studentId) {
             </div>
 
             <div class="payment-summary">
-              <div class="section-title" style="color:rgba(255,255,255,0.4);border-color:rgba(255,255,255,0.1);">Payment Summary</div>
+              <div class="section-title">Payment Summary</div>
               <div class="summary-row">
                 <label>Paid Amount (TZS)</label>
                 <span>${formatCurrency(Math.round(paidUSD * (student.exchangeRate || 2500)))} TZS</span>
