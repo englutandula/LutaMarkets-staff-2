@@ -105,7 +105,7 @@ async function downloadReceiptAsPNG(elementId, filename) {
         await new Promise(r => setTimeout(r, 200));
 
         const canvas = await html2canvas(element, {
-            scale: 2,
+            scale: 4,
             useCORS: true,
             allowTaint: true,
             backgroundColor: '#ffffff',
@@ -127,7 +127,7 @@ async function downloadReceiptAsPNG(elementId, filename) {
             imgs.forEach(img => img.style.display = 'none');
 
             const canvas = await html2canvas(element, {
-                scale: 2,
+                scale: 4,
                 backgroundColor: '#ffffff',
                 logging: false
             });

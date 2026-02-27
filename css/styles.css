@@ -1818,6 +1818,9 @@ button {
   position: relative;
   font-family: 'Inter', sans-serif;
   margin: 0 auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 .receipt-header-redesign {
