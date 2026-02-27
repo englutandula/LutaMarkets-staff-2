@@ -97,12 +97,22 @@ async function downloadReceiptAsPNG(elementId, filename) {
         return;
     }
 
+    // Capture original styles to restore later
+    const originalWidth = element.style.width;
+    const originalMinWidth = element.style.minWidth;
+    const originalTransform = element.style.transform;
+
     try {
+        // Force A5 width (148mm = approx 559px) during capture
+        // This ensures mobile browsers don't "squish" the layout
+        element.style.width = '148mm';
+        element.style.minWidth = '148mm';
+
         // Convert images to base64 first to avoid CORS issues
         await convertImagesToBase64(element);
 
-        // Small delay to let images update
-        await new Promise(r => setTimeout(r, 200));
+        // Small delay to let images and styles settle
+        await new Promise(r => setTimeout(r, 300));
 
         const canvas = await html2canvas(element, {
             scale: 4,
@@ -110,7 +120,9 @@ async function downloadReceiptAsPNG(elementId, filename) {
             allowTaint: true,
             backgroundColor: '#ffffff',
             logging: false,
-            imageTimeout: 5000
+            imageTimeout: 5000,
+            width: 559.37, // Explicit width in pixels for A5 (148mm)
+            windowWidth: 1024 // Act as if on a desktop during capture
         });
 
         const link = document.createElement('a');
@@ -121,29 +133,12 @@ async function downloadReceiptAsPNG(elementId, filename) {
         document.body.removeChild(link);
     } catch (err) {
         console.error('Error generating receipt PNG:', err);
-        // Fallback: try without images
-        try {
-            const imgs = element.querySelectorAll('img');
-            imgs.forEach(img => img.style.display = 'none');
-
-            const canvas = await html2canvas(element, {
-                scale: 4,
-                backgroundColor: '#ffffff',
-                logging: false
-            });
-
-            imgs.forEach(img => img.style.display = '');
-
-            const link = document.createElement('a');
-            link.download = filename || 'LutaMarkets_Receipt.png';
-            link.href = canvas.toDataURL('image/png');
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        } catch (err2) {
-            console.error('Fallback also failed:', err2);
-            alert('Failed to download receipt. Please try again.');
-        }
+        alert('Failed to download receipt. Retrying...');
+    } finally {
+        // Restore original styles
+        element.style.width = originalWidth;
+        element.style.minWidth = originalMinWidth;
+        element.style.transform = originalTransform;
     }
 }
 

@@ -1642,6 +1642,11 @@ button {
 
   .stats-row {
     grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .stats-card {
+    padding: 16px;
   }
 
   .topbar-search {
@@ -1650,6 +1655,7 @@ button {
 
   .form-row {
     grid-template-columns: 1fr;
+    gap: 12px;
   }
 
   .toolbar {
@@ -1675,8 +1681,11 @@ button {
   }
 
   .receipt-card {
-    width: 100%;
-    max-width: 420px;
+    width: 148mm;
+    transform: scale(calc(100vw / 650));
+    /* Scale down to fit mobile but keep dimensions */
+    transform-origin: top center;
+    margin: 0 auto;
   }
 
   .modal-content {
@@ -1802,8 +1811,11 @@ button {
 .receipt-wrapper {
   display: flex;
   justify-content: center;
-  padding: 40px 0;
+  padding: 40px 20px;
   background: #f1f5f9;
+  overflow-x: auto;
+  /* Allow horizontal scroll if card is wider than screen */
+  -webkit-overflow-scrolling: touch;
 }
 
 .receipt-card {
